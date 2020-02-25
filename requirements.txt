@@ -1,0 +1,5 @@
+Flask==1.1.1
+Werkzeug==0.16.1
+Flask-Session
+psycopg2-binary
+SQLAlchemy

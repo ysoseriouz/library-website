@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block title %}Library{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block style %}
+.search-bar {
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+.icon-button {
+    border-radius: 0px 5px 5px 0px;
+}
+.my-custom-scrollbar {
+    position: relative;
+    height: 650px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+{% endblock %}
+{% block body %}
+<div class="container">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Hi, {{ username }}</a>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <form class="form-inline" action="{{ url_for('logout') }}" method="post">
+                    <button class="btn btn-info" type="submit">Log out</button>
+                </form>
+            </ul>
+        </div>
+    </nav>
+    <div class="row search-bar">
+        <div class="col-md-12">
+            <form action="{{ url_for('library') }}" method="post">
+                <div class="form-group input-group">
+                    <input type="text" name="search-book" class="form-control" placeholder="ISBN number, title or author of a book...">
+                    <span class="input-group-addon">
+                        <button class="btn btn-info icon-button" type="submit"><i class="fa fa-search"> Search</i></button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% if noBook %}
+        <h1>No books found!</h1>
+    {% else %}
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">ISBN Number</th>
+                      <th scope="col">Book Title</th>
+                      <th scope="col">Author</th>
+                      <th scope="col">Publication Year</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for book in books %}
+                    <tr data-href="{{ url_for('book', id=book['id']) }}">
+                        <td>{{ book['isbn'] }}</td>
+                        <td>{{ book['title'] }}</td>
+                        <td>{{ book['author'] }}</td>
+                        <td>{{ book['year'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    const rows = document.querySelectorAll("tr[data-href]");
+                    rows.forEach(row => {
+                        row.addEventListener("click", () => {
+                            window.open(row.dataset.href, "_blank");
+                        });
+                    });
+                });
+            </script>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

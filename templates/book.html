@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block title %}Book View{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block style %}
+.search-bar {
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+.icon-button {
+    border-radius: 0px 5px 5px 0px;
+}
+.my-custom-scrollbar {
+    position: relative;
+    height: 650px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+.jumbotron {
+    background-color: transparent;
+    padding: 1em 1em;
+    margin-bottom: 0;
+}
+.jumbotron h1 {
+    font-size: 50px;
+    color: #fff;
+    font-weight: bold;
+}
+.jumbotron span {
+    font-size: 30px;
+    color: #fff;
+}
+hr {
+    border-color: black;
+    border-width: 2px;
+}
+label {
+    font-size: 40px;
+}
+.review {
+    padding-left: 2em;
+    word-wrap: break-word;
+}
+.review h3 {
+    text-align: left;
+    padding-top: 10px;
+}
+{% endblock %}
+{% block body %}
+<div class="container">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Hi, {{ username }}</a>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <form class="form-inline" action="{{ url_for('logout') }}" method="post">
+                    <button class="btn btn-info" type="submit">Log out</button>
+                </form>
+            </ul>
+        </div>
+    </nav>
+    <div class="row search-bar">
+        <div class="col-md-12">
+            <form action="{{ url_for('library') }}" method="post">
+                <div class="form-group input-group">
+                    <input type="text" name="search-book" class="form-control" placeholder="ISBN number, title or author of a book...">
+                    <span class="input-group-addon">
+                        <button class="btn btn-info icon-button" type="submit"><i class="fa fa-search"> Search</i></button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% if book %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">{{ book['title'] }}</h1>
+            <h3 class="lead"><i>. Author:</i>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;<span>{{ book['author'] }}</span></h3>
+            <h3 class="lead"><i>. Publication Year:</i>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;<span>{{ book['year'] }}</span></h3>
+            <h3 class="lead"><i>. ISBN Number:</i>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;<span>{{ book['isbn'] }}</span></h3>
+            <h3 class="lead"><i>. Average Rating Scores:</i>&emsp;&emsp;&nbsp;<span>{{ average_rating }}</span></h3>
+            <h3 class="lead"><i>. Number Of Ratings:</i>&emsp;&emsp;&emsp;&emsp;<span>{{ number_of_ratings }}</span></h3>
+            <hr class="my-4">
+        </div>
+    </div>
+    {% endif %}
+    {% if reviewable %}
+    <div class="review-section">
+        <form action="{{ url_for('book', id=book['id']) }}" method="post" id="review-typer">
+            <div class="form-inline">
+                <label class="my-1 mr-2" for="rating" style="color:cyan;">Rating scores</label>
+                <select name="rating-score" class="custom-select my-1 mr-sm-2" id="rating">
+                    <option value="0">Choose...</option>
+                    <option value="1">1 star</option>
+                    <option value="2">2 stars</option>
+                    <option value="3">3 stars</option>
+                    <option value="4">4 stars</option>
+                    <option value="5">5 stars</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea name="review" class="form-control" rows="3" form="review-typer" placeholder="Make a comment..." required></textarea>
+            </div>
+            <input type="submit" class="btn btn-outline-primary btn-lg" style="margin-top:2px; float:right;">
+        </form>
+    </div>
+    <hr style="margin-top:5em">
+    {% endif %}
+    {% for review in reviews %}
+    <div class="{{ review['username'] }} review">
+        <div class="row">
+            <div class="col-4">
+                <h1>{{ review['username'] }}:</h1>
+                <h6>Rate: {{ review['rating_score'] }}/5 stars</h6>
+                <small class="text-muted">{{ review['time'] }}</small>
+            </div>
+            <div class="col-8"><h3>{{ review['review'] }}</h3></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

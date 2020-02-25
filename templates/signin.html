@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Sign In{% endblock %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='signin.css') }}">
+{% endblock %}
+{% block style %}
+.form-signin input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+{% endblock %}
+
+{% block body %}
+{% with message = get_flashed_messages(category_filter=["success"]) %}
+    {% if message %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endif %}
+{% endwith %}
+<div class="container">
+    <div class="row">
+        <h1 class="col-12" style="text-align: center;">LIBRARY</h1>
+    </div>
+    <div class="row">
+        <h2 class="col-12" style="text-align: center;">Let's go to the church</h2>
+    </div>
+    <form class="form-signin" action="{{ url_for('index') }}" method="post">
+        <img src="{{ url_for('static', filename='images/book.svg') }}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
+
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        {% with message = get_flashed_messages(category_filter=["error"]) %}
+            {% if message %}
+            <p class="text-danger">{{ message }}</p>
+            {% endif %}
+        {% endwith %}
+        <p class="mt-4 mb-3 text-muted">Don't have account yet. <a href="{{ url_for('register') }}" style="text-decoration: underline;">Sign Up</a></p>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+    </form>
+</div>
+{% endblock %}
